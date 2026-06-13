@@ -1,0 +1,21 @@
+{
+  "name": "Mixtape Mitski.",
+  "short_name": "Mitski.",
+  "start_url": "/mixtape-mitski/",
+  "display": "standalone",
+  "background_color": "#07080f",
+  "theme_color": "#07080f",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

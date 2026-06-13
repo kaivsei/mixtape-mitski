@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>to my friend, Nairu.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#07080f;
+  --panel:#0d1220;
+  --border:rgba(140,180,230,0.18);
+  --mist:rgba(180,210,240,0.75);
+  --mist2:rgba(180, 210, 240, 0.38);
+  --mist3:rgba(180,210,240,0.12);
+  --glow:#cde8ff;
+  --accent:#4a90c8;
+  --accent2:#6aafdf;
+}
+
+html,body{
+  height:100%;
+  width:100%;
+  background:var(--bg);
+  color:var(--mist);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+/* stars canvas sits behind everything */
+#stars{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  display:block;
+  z-index:0;
+  image-rendering:pixelated;
+}
+
+/* ocean at bottom */
+#ocean{
+  position:fixed;
+  bottom:0;left:0;
+  display:block;
+  z-index:1;
+  image-rendering:pixelated;
+}
+
+main{
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:1.2rem;
+  padding:1.5rem 1.5rem 7rem;
+  width:100%;
+  max-width:380px;
+}
+
+/* title */
+.title{text-align:center;}
+.title-pre{
+  display:block;
+  font-family:'Press Start 2P',monospace;
+  font-size:0.4rem;
+  letter-spacing:0.18em;
+  color:var(--mist2);
+  margin-bottom:0.6rem;
+  line-height:2;
+}
+.title-main{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.9rem,7vw,2.6rem);
+  font-style:italic;
+  font-weight:300;
+  color:var(--glow);
+}
+
+/* cassette wrapper */
+#cassette-wrap{
+  width:100%;
+  max-width:340px;
+  filter:drop-shadow(2px 2px 0px rgba(74,144,200,0.5))
+         drop-shadow(0 0 16px rgba(74,144,200,0.12));
+}
+#cassette-wrap svg{width:100%;height:auto;display:block;}
+
+/* reels — fixed transform-origin matching SVG coordinates */
+#reel-l{
+  transform-origin:114px 86px;
+  animation:none;
+}
+#reel-r{
+  transform-origin:206px 86px;
+  animation:none;
+}
+.spinning #reel-l{animation:spinCW 2.4s linear infinite;}
+.spinning #reel-r{animation:spinCW 2.8s linear infinite;}
+@keyframes spinCW{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* tape */
+.tape-seg{stroke-dasharray:3 2;stroke-dashoffset:0;}
+.spinning .tape-seg{animation:tapeflow 0.55s linear infinite;}
+@keyframes tapeflow{to{stroke-dashoffset:-10;}}
+
+/* VU bars */
+.spinning .vu-a{animation:vu 0.33s ease-in-out infinite alternate;}
+.spinning .vu-b{animation:vu 0.27s ease-in-out 0.08s infinite alternate;}
+.spinning .vu-c{animation:vu 0.41s ease-in-out 0.04s infinite alternate;}
+.spinning .vu-d{animation:vu 0.30s ease-in-out 0.12s infinite alternate;}
+.spinning .vu-e{animation:vu 0.37s ease-in-out 0.02s infinite alternate;}
+@keyframes vu{from{transform:scaleY(0.25);}to{transform:scaleY(1);}}
+
+/* song info */
+#song-info{text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.35rem;}
+#song-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;
+  font-style:italic;
+  color:var(--glow);
+}
+#song-num{
+  font-family:'Press Start 2P',monospace;
+  font-size:0.45rem;
+  color:var(--mist2);
+  letter-spacing:0.1em;
+}
+
+/* pixel buttons */
+#controls{display:flex;align-items:center;gap:0.55rem;}
+
+.px-btn{
+  background:var(--panel);
+  border:none;
+  cursor:pointer;
+  color:var(--accent2);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform 0.07s,filter 0.1s;
+  image-rendering:pixelated;
+  box-shadow:
+    inset -2px -2px 0 0 rgba(0,0,0,0.55),
+    inset 2px 2px 0 0 rgba(140,200,240,0.18),
+    0 0 0 1px rgba(140,200,240,0.14);
+}
+.px-btn:active{
+  transform:translate(2px,2px);
+  box-shadow:
+    inset 2px 2px 0 0 rgba(0,0,0,0.55),
+    inset -2px -2px 0 0 rgba(140,200,240,0.06),
+    0 0 0 1px rgba(140,200,240,0.1);
+}
+.px-btn:hover{filter:brightness(1.35);}
+.px-btn svg{display:block;}
+
+.ctrl-side{width:34px;height:34px;}
+
+.ctrl-play{
+  width:46px;height:46px;
+  background:#0e2a44;
+  color:var(--glow);
+  box-shadow:
+    inset -3px -3px 0 0 rgba(0,0,0,0.5),
+    inset 3px 3px 0 0 rgba(140,200,240,0.22),
+    0 0 0 1px rgba(140,200,240,0.18);
+}
+.ctrl-play:active{background:#0a1e32;}
+
+/* shuffle + loop buttons row */
+#extras{
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+.px-btn-sm{
+  background:var(--panel);
+  border:none;
+  cursor:pointer;
+  color:var(--mist2);
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Press Start 2P',monospace;
+  font-size:0.38rem;
+  transition:transform 0.07s,filter 0.1s,color 0.15s;
+  box-shadow:
+    inset -2px -2px 0 0 rgba(0,0,0,0.55),
+    inset 2px 2px 0 0 rgba(140,200,240,0.14),
+    0 0 0 1px rgba(140,200,240,0.12);
+}
+.px-btn-sm:active{transform:translate(2px,2px);}
+.px-btn-sm:hover{filter:brightness(1.35);}
+.px-btn-sm.on{color:var(--accent);box-shadow:inset -2px -2px 0 0 rgba(0,0,0,0.55),inset 2px 2px 0 0 rgba(140,200,240,0.14),0 0 0 1px var(--accent);}
+
+/* volume flash indicator */
+#vol-indicator{
+  position:fixed;
+  top:1.2rem;right:1.2rem;
+  font-family:'Press Start 2P',monospace;
+  font-size:0.42rem;
+  color:var(--glow);
+  background:var(--panel);
+  border:1px solid var(--accent);
+  padding:0.3rem 0.6rem;
+  opacity:0;
+  transition:opacity 0.3s;
+  pointer-events:none;
+  z-index:20;
+  letter-spacing:0.1em;
+}
+#vol-indicator.show{opacity:1;}
+
+/* track counter — text only */
+#track-counter{
+  display:flex;
+  align-items:center;
+  gap:0.4rem;
+  font-family:'Press Start 2P',monospace;
+  font-size:0.45rem;
+  color:var(--mist2);
+  letter-spacing:0.1em;
+}
+
+/* hidden audio element — browser default controls hidden, we drive it via JS */
+#player{display:none;}
+
+/* toast */
+#toast{
+  position:fixed;bottom:5rem;left:50%;
+  transform:translateX(-50%) translateY(8px);
+  background:#0d1220;
+  border:2px solid var(--accent);
+  box-shadow:3px 3px 0 0 rgba(74,144,200,0.4);
+  color:var(--glow);
+  padding:0.35rem 0.9rem;
+  font-family:'Press Start 2P',monospace;
+  font-size:0.42rem;
+  letter-spacing:0.08em;
+  line-height:2;
+  opacity:0;
+  transition:all 0.25s;
+  pointer-events:none;
+  white-space:nowrap;
+  z-index:10;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+<link rel="manifest" href="manifest.json">
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/mixtape-mitski/sw.js');
+  }
+</script>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+<canvas id="ocean"></canvas>
+
+<main>
+  <div class="title">
+    <span class="title-pre">// to my friend, //</span>
+    <div class="title-main">Nairu.</div>
+  </div>
+
+  <!-- CASSETTE SVG — pixel/mechanical, lighter blue-grey palette -->
+  <div id="cassette-wrap">
+    <svg viewBox="0 0 320 188" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges" aria-label="cassette tape">
+
+      <!-- === OUTER BODY === -->
+      <rect x="0" y="0" width="320" height="188" fill="#2a3f5a"/>
+      <!-- top bevel -->
+      <rect x="0" y="0" width="320" height="4" fill="#4a6a8a"/>
+      <rect x="0" y="0" width="4" height="188" fill="#3d5a78"/>
+      <!-- bottom / right shadow -->
+      <rect x="0" y="184" width="320" height="4" fill="#182030"/>
+      <rect x="316" y="0" width="4" height="188" fill="#182030"/>
+
+      <!-- === FACE INSET === -->
+      <rect x="8" y="8" width="304" height="172" fill="#1e3050"/>
+      <rect x="8" y="8" width="304" height="3" fill="#162540"/>
+      <rect x="8" y="8" width="3" height="172" fill="#162540"/>
+      <rect x="8" y="177" width="304" height="3" fill="#3a5878"/>
+      <rect x="309" y="8" width="3" height="172" fill="#3a5878"/>
+
+      <!-- === LABEL ZONE === -->
+      <rect x="16" y="14" width="288" height="82" fill="#15253d"/>
+      <rect x="16" y="14" width="288" height="2" fill="#0d1825"/>
+      <rect x="16" y="14" width="2" height="82" fill="#0d1825"/>
+      <rect x="16" y="94" width="288" height="2" fill="#2e4a68"/>
+      <rect x="302" y="14" width="2" height="82" fill="#2e4a68"/>
+
+      <!-- label stripe accent -->
+      <rect x="16" y="22" width="288" height="4" fill="#1e3a58"/>
+      <rect x="16" y="86" width="288" height="4" fill="#1e3a58"/>
+
+      <!-- artist text -->
+      <text x="160" y="44" text-anchor="middle"
+        font-family="'Press Start 2P',monospace" font-size="7"
+        fill="rgba(160,210,255,0.55)" letter-spacing="3">MITSKI</text>
+
+      <!-- side-B label pill -->
+      <rect x="126" y="52" width="68" height="14" fill="#0d1825"/>
+      <rect x="126" y="52" width="68" height="2" fill="#0a1520"/>
+      <rect x="126" y="64" width="68" height="2" fill="#1e3050"/>
+      <text x="160" y="62" text-anchor="middle"
+        font-family="'Press Start 2P',monospace" font-size="5"
+        fill="rgba(140,195,240,0.45)" letter-spacing="2">1.0.0</text>
+
+      <!-- === TAPE WINDOW === -->
+      <rect x="68" y="72" width="184" height="38" fill="#080c14"/>
+      <rect x="68" y="72" width="184" height="2" fill="#040609"/>
+      <rect x="68" y="72" width="2" height="38" fill="#040609"/>
+      <rect x="68" y="108" width="184" height="2" fill="#1a2d48"/>
+      <rect x="250" y="72" width="2" height="38" fill="#1a2d48"/>
+
+      <!-- tape path arcs + mid line -->
+      <path d="M84 98 Q114 76 114 90" fill="none" stroke="rgba(90,150,200,0.55)" stroke-width="1.5" class="tape-seg"/>
+      <path d="M206 90 Q206 76 236 98" fill="none" stroke="rgba(90,150,200,0.55)" stroke-width="1.5" class="tape-seg"/>
+      <line x1="114" y1="98" x2="206" y2="98" stroke="rgba(90,150,200,0.3)" stroke-width="1.5"/>
+
+      <!-- === LEFT REEL (id for JS spin) === -->
+      <g id="reel-l">
+        <!-- outer ring -->
+        <circle cx="114" cy="86" r="24" fill="none" stroke="rgba(100,170,230,0.35)" stroke-width="2"/>
+        <!-- mid ring -->
+        <circle cx="114" cy="86" r="16" fill="#0d1e34" stroke="rgba(100,170,230,0.2)" stroke-width="1.5"/>
+        <!-- spokes — 4 cardinal + 4 diagonal -->
+        <line x1="114" y1="62" x2="114" y2="74" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="114" y1="98" x2="114" y2="110" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="90" y1="86" x2="102" y2="86" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="126" y1="86" x2="138" y2="86" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="97" y1="69" x2="105" y2="77" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <line x1="123" y1="95" x2="131" y2="103" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <line x1="131" y1="69" x2="123" y2="77" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <line x1="97" y1="103" x2="105" y2="95" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <!-- hub square -->
+        <rect x="108" y="80" width="12" height="12" fill="#080c14" stroke="rgba(120,185,240,0.4)" stroke-width="1.5"/>
+        <rect x="111" y="83" width="6" height="6" fill="rgba(100,170,220,0.15)"/>
+        <!-- hub crosshair -->
+        <line x1="108" y1="86" x2="120" y2="86" stroke="rgba(120,185,240,0.3)" stroke-width="1"/>
+        <line x1="114" y1="80" x2="114" y2="92" stroke="rgba(120,185,240,0.3)" stroke-width="1"/>
+      </g>
+
+      <!-- === RIGHT REEL === -->
+      <g id="reel-r">
+        <circle cx="206" cy="86" r="24" fill="none" stroke="rgba(100,170,230,0.35)" stroke-width="2"/>
+        <circle cx="206" cy="86" r="16" fill="#0d1e34" stroke="rgba(100,170,230,0.2)" stroke-width="1.5"/>
+        <line x1="206" y1="62" x2="206" y2="74" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="206" y1="98" x2="206" y2="110" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="182" y1="86" x2="194" y2="86" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="218" y1="86" x2="230" y2="86" stroke="rgba(120,185,240,0.5)" stroke-width="2"/>
+        <line x1="189" y1="69" x2="197" y2="77" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <line x1="215" y1="95" x2="223" y2="103" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <line x1="223" y1="69" x2="215" y2="77" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <line x1="189" y1="103" x2="197" y2="95" stroke="rgba(100,165,220,0.35)" stroke-width="1.5"/>
+        <rect x="200" y="80" width="12" height="12" fill="#080c14" stroke="rgba(120,185,240,0.4)" stroke-width="1.5"/>
+        <rect x="203" y="83" width="6" height="6" fill="rgba(100,170,220,0.15)"/>
+        <line x1="200" y1="86" x2="212" y2="86" stroke="rgba(120,185,240,0.3)" stroke-width="1"/>
+        <line x1="206" y1="80" x2="206" y2="92" stroke="rgba(120,185,240,0.3)" stroke-width="1"/>
+      </g>
+
+      <!-- === BOTTOM PANEL === -->
+
+      <!-- screw corners -->
+      <rect x="12" y="116" width="10" height="10" fill="#0d1825" stroke="rgba(100,170,230,0.25)" stroke-width="1.5"/>
+      <line x1="12" y1="121" x2="22" y2="121" stroke="rgba(100,170,230,0.3)" stroke-width="1"/>
+      <line x1="17" y1="116" x2="17" y2="126" stroke="rgba(100,170,230,0.3)" stroke-width="1"/>
+
+      <rect x="298" y="116" width="10" height="10" fill="#0d1825" stroke="rgba(100,170,230,0.25)" stroke-width="1.5"/>
+      <line x1="298" y1="121" x2="308" y2="121" stroke="rgba(100,170,230,0.3)" stroke-width="1"/>
+      <line x1="303" y1="116" x2="303" y2="126" stroke="rgba(100,170,230,0.3)" stroke-width="1"/>
+
+      <!-- write-protect notch -->
+      <rect x="12" y="168" width="10" height="10" fill="#080c14" stroke="rgba(100,170,230,0.15)" stroke-width="1"/>
+      <rect x="298" y="168" width="10" height="10" fill="#080c14" stroke="rgba(100,170,230,0.15)" stroke-width="1"/>
+
+      <!-- center guide slot -->
+      <rect x="136" y="166" width="48" height="12" fill="#080c14" stroke="rgba(100,170,230,0.15)" stroke-width="1"/>
+      <rect x="148" y="169" width="24" height="6" fill="rgba(100,170,220,0.07)"/>
+
+      <!-- VU left -->
+      <rect x="28" y="118" width="20" height="22" fill="#080c14" stroke="rgba(100,170,230,0.15)" stroke-width="1"/>
+      <rect class="vu-a" x="30" y="120" width="3" height="18" fill="#4a90c8" style="transform-origin:30px 138px;"/>
+      <rect class="vu-b" x="34" y="120" width="3" height="18" fill="#4a90c8" style="transform-origin:34px 138px;"/>
+      <rect class="vu-c" x="38" y="120" width="3" height="18" fill="#5ad4b0" style="transform-origin:38px 138px;"/>
+      <rect class="vu-d" x="42" y="120" width="3" height="18" fill="#5ad4b0" style="transform-origin:42px 138px;"/>
+      <rect class="vu-e" x="46" y="120" width="0" height="18" fill="#ff6b8a" style="transform-origin:46px 138px;"/>
+
+      <!-- VU right -->
+      <rect x="272" y="118" width="20" height="22" fill="#080c14" stroke="rgba(100,170,230,0.15)" stroke-width="1"/>
+      <rect class="vu-c" x="274" y="120" width="3" height="18" fill="#4a90c8" style="transform-origin:274px 138px;"/>
+      <rect class="vu-e" x="278" y="120" width="3" height="18" fill="#4a90c8" style="transform-origin:278px 138px;"/>
+      <rect class="vu-a" x="282" y="120" width="3" height="18" fill="#5ad4b0" style="transform-origin:282px 138px;"/>
+      <rect class="vu-b" x="286" y="120" width="3" height="18" fill="#5ad4b0" style="transform-origin:286px 138px;"/>
+      <rect class="vu-d" x="290" y="120" width="0" height="18" fill="#ff6b8a" style="transform-origin:290px 138px;"/>
+
+      <!-- side grip ridges -->
+      <rect x="4" y="130" width="6" height="2" fill="rgba(140,190,230,0.14)"/>
+      <rect x="4" y="134" width="6" height="2" fill="rgba(140,190,230,0.09)"/>
+      <rect x="4" y="138" width="6" height="2" fill="rgba(140,190,230,0.06)"/>
+      <rect x="310" y="130" width="6" height="2" fill="rgba(140,190,230,0.14)"/>
+      <rect x="310" y="134" width="6" height="2" fill="rgba(140,190,230,0.09)"/>
+      <rect x="310" y="138" width="6" height="2" fill="rgba(140,190,230,0.06)"/>
+
+      <!-- REW / PLAY / FF labels -->
+      <text x="55" y="182" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="4" fill="rgba(140,195,240,0.28)">REW</text>
+      <text x="160" y="182" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="4" fill="rgba(140,195,240,0.28)">PLAY</text>
+      <text x="265" y="182" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="4" fill="rgba(140,195,240,0.28)">FF</text>
+
+      <!-- spec line -->
+      <text x="160" y="134" text-anchor="middle" font-family="'Press Start 2P',monospace" font-size="3.5" fill="rgba(140,195,240,0.2)">TYPE II  •  90 MIN  •  48kHz</text>
+
+    </svg>
+  </div>
+
+  <!-- song info -->
+  <div id="song-info">
+    <div id="song-title">Washing Machine Heart</div>
+    <div id="song-num">TRK <span id="idx-cur">01</span> / <span id="idx-total">10</span></div>
+  </div>
+
+  <!-- pixel controls -->
+  <div id="controls">
+    <button class="px-btn ctrl-side" onclick="prev()" aria-label="sebelumnya">
+      <svg width="18" height="18" viewBox="0 0 18 18" shape-rendering="crispEdges">
+        <rect x="3" y="4" width="2" height="10" fill="currentColor"/>
+        <polygon points="14,4 7,9 14,14" fill="currentColor"/>
+      </svg>
+    </button>
+    <button class="px-btn ctrl-play" id="btn-play" onclick="togglePlay()" aria-label="putar/jeda">
+      <svg id="ico-play" width="20" height="20" viewBox="0 0 20 20" shape-rendering="crispEdges">
+        <polygon points="5,3 17,10 5,17" fill="currentColor"/>
+      </svg>
+      <svg id="ico-pause" width="20" height="20" viewBox="0 0 20 20" shape-rendering="crispEdges" style="display:none">
+        <rect x="4" y="3" width="4" height="14" fill="currentColor"/>
+        <rect x="12" y="3" width="4" height="14" fill="currentColor"/>
+      </svg>
+    </button>
+    <button class="px-btn ctrl-side" onclick="next()" aria-label="berikutnya">
+      <svg width="18" height="18" viewBox="0 0 18 18" shape-rendering="crispEdges">
+        <rect x="13" y="4" width="2" height="10" fill="currentColor"/>
+        <polygon points="4,4 11,9 4,14" fill="currentColor"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- track label only, no bar -->
+  <div id="track-counter">
+    <span id="cnt-cur">01</span>
+    <span style="opacity:0.3">—</span>
+    <span id="cnt-total">05</span>
+  </div>
+
+  <!-- circle (shuffle) + X (loop) -->
+  <div id="extras">
+    <button class="px-btn-sm" id="btn-shuffle" onclick="toggleShuffle()" title="shuffle" aria-label="shuffle">
+      <!-- pixel circle outline -->
+      <svg width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
+        <rect x="4" y="1" width="8" height="2"/>
+        <rect x="2" y="3" width="2" height="2"/><rect x="12" y="3" width="2" height="2"/>
+        <rect x="1" y="5" width="2" height="6"/>
+        <rect x="13" y="5" width="2" height="6"/>
+        <rect x="2" y="11" width="2" height="2"/><rect x="12" y="11" width="2" height="2"/>
+        <rect x="4" y="13" width="8" height="2"/>
+      </svg>
+    </button>
+    <button class="px-btn-sm" id="btn-loop" onclick="toggleLoop()" title="loop" aria-label="loop">
+      <!-- pixel X / cross -->
+      <svg width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
+        <rect x="2" y="2" width="2" height="2"/>
+        <rect x="4" y="4" width="2" height="2"/>
+        <rect x="6" y="6" width="4" height="4"/>
+        <rect x="10" y="4" width="2" height="2"/>
+        <rect x="12" y="2" width="2" height="2"/>
+        <rect x="4" y="10" width="2" height="2"/>
+        <rect x="2" y="12" width="2" height="2"/>
+        <rect x="10" y="10" width="2" height="2"/>
+        <rect x="12" y="12" width="2" height="2"/>
+      </svg>
+    </button>
+  </div>
+</main>
+
+<!-- volume indicator -->
+<div id="vol-indicator">VOL <span id="vol-num">80</span>%</div>
+
+<!-- hidden audio element for local files -->
+<audio id="player" preload="auto"></audio>
+<div id="toast"></div>
+
+<script>
+/* ── STARS ── */
+(function(){
+  const cv = document.getElementById('stars');
+  const cx = cv.getContext('2d');
+  let ST = [];
+
+  function resize(){
+    cv.width  = window.innerWidth;
+    cv.height = window.innerHeight;
+  }
+
+  function init(){
+    ST = [];
+    const n = Math.floor(cv.width * cv.height / 2200);
+    for(let i = 0; i < n; i++){
+      const big = Math.random() < 0.12;
+      ST.push({
+        x:  Math.floor(Math.random() * cv.width),
+        y:  Math.floor(Math.random() * cv.height),
+        sz: big ? 2 : 1,
+        a:  Math.random(),
+        lo: Math.random() * 0.04,
+        hi: Math.random() * 0.75 + 0.2,
+        sp: Math.random() * 0.028 + 0.006,
+        ph: Math.random() * Math.PI * 2,
+        r:  Math.random()<0.08 ? 180 : 200,
+        g:  Math.random()<0.08 ? 225 : 200,
+        b:  Math.random()<0.08 ? 255 : 245
+      });
+    }
+  }
+
+  let t = 0;
+  function draw(){
+    t++;
+    cx.clearRect(0, 0, cv.width, cv.height);
+    for(let i = 0; i < ST.length; i++){
+      const s = ST[i];
+      const a = s.lo + (s.hi - s.lo) * (0.5 + 0.5 * Math.sin(t * s.sp + s.ph));
+      cx.fillStyle = 'rgba(' + s.r + ',' + s.g + ',' + s.b + ',' + a.toFixed(3) + ')';
+      cx.fillRect(s.x, s.y, s.sz, s.sz);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', function(){ resize(); init(); });
+  resize();
+  init();
+  requestAnimationFrame(draw);
+})();
+
+/* ── OCEAN ── */
+(function(){
+  const cv = document.getElementById('ocean');
+  const cx = cv.getContext('2d');
+  const PX = 4;
+  let W, H, cols, rows;
+
+  function resize(){
+    W = window.innerWidth;
+    H = Math.floor(window.innerHeight * 0.2);
+    cv.width  = W;
+    cv.height = H;
+    cv.style.width  = W + 'px';
+    cv.style.height = H + 'px';
+    cols = Math.ceil(W / PX);
+    rows = Math.ceil(H / PX);
+  }
+
+  // depth palette: deepest→shallowest→foam
+  var PAL = [
+    [6,18,38],[8,26,54],[10,40,74],[12,58,96],
+    [14,76,118],[20,100,148],[160,218,248]
+  ];
+
+  var t = 0;
+  function draw(){
+    t += 0.038;
+    cx.clearRect(0, 0, W, H);
+    for(let c = 0; c < cols; c++){
+      // wave surface: sum of three sines
+      var surf = Math.round(
+        1.5
+        + Math.sin(c * 0.17 + t * 1.1) * 2.2
+        + Math.sin(c * 0.08 + t * 0.72 + 1.3) * 1.6
+        + Math.sin(c * 0.29 + t * 1.6  + 2.5) * 1.0
+      );
+      for(let r = 0; r < rows; r++){
+        var depth = r - surf;
+        if(depth < 0) continue;
+        var ci = depth === 0 ? 6 : Math.min(5, Math.floor(depth / Math.max(1, rows / 5)));
+        var col = PAL[ci];
+        var alpha = depth === 0 ? 0.88 : (0.52 + depth / rows * 0.38);
+        cx.fillStyle = 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',' + alpha + ')';
+        cx.fillRect(c * PX, r * PX, PX, PX);
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  requestAnimationFrame(draw);
+})();
+
+/* ── PLAYLIST ── */
+var songs = [
+  {title:'Washing Machine Heart',     src:'songs/washing-machine-heart.mp3'},
+  {title:'First Love / Late Spring',  src:'songs/first-love-late-spring.mp3'},
+  {title:'I Will',                    src:'songs/i-will.mp3'},
+  {title:'A Pearl',                   src:'songs/a-pearl.mp3'},
+  {title:'Francis Forever',           src:'songs/francis-forever.mp3'},
+  {title:'I Bet on Losing Dogs',      src:'songs/i-bet-on-losing-dogs.mp3'},
+  {title:'Liquid Smooth',             src:'songs/liquid-smooth.mp3'},
+  {title:'If I Leave',                src:'songs/if-i-leave.mp3'},
+  {title:'Jobless Monday',            src:'songs/jobless-monday.mp3'},
+  {title:'Where\'s My Phone?',        src:'songs/wheres-my-phone.mp3'}
+
+];
+
+var cur = 0, playing = false;
+var shuffleOn = false, loopMode = 0; // 0=off 1=loop-all 2=loop-one
+var audio = document.getElementById('player');
+
+function pad(n){ return n < 10 ? '0'+n : ''+n; }
+
+function updateUI(){
+  // fade title out, swap, fade back in
+  var titleEl = document.getElementById('song-title');
+  titleEl.style.transition = 'opacity 0.2s';
+  titleEl.style.opacity = '0';
+  setTimeout(function(){
+    titleEl.textContent = songs[cur].title;
+    titleEl.style.opacity = '1';
+  }, 200);
+
+  document.getElementById('idx-cur').textContent   = pad(cur + 1);
+  document.getElementById('idx-total').textContent = pad(songs.length);
+
+  // counter bar + labels
+  document.getElementById('cnt-cur').textContent   = pad(cur + 1);
+  document.getElementById('cnt-total').textContent = pad(songs.length);
+  var pct = songs.length > 1 ? (cur / (songs.length - 1)) * 100 : 100;
+  var fill = document.getElementById('cnt-fill');
+  if(fill) fill.style.width = pct + '%';
+}
+
+function setPlayUI(p){
+  playing = p;
+  document.getElementById('ico-play').style.display  = p ? 'none'  : 'block';
+  document.getElementById('ico-pause').style.display = p ? 'block' : 'none';
+  document.getElementById('cassette-wrap').classList.toggle('spinning', p);
+}
+
+function loadSong(idx, autoplay){
+  cur = idx;
+  updateUI();
+  audio.src = songs[cur].src;
+  audio.load();
+  if(autoplay){
+    audio.play().catch(function(){ setPlayUI(false); });
+    setPlayUI(true);
+  } else {
+    setPlayUI(false);
+  }
+}
+
+function togglePlay(){
+  if(!playing){
+    if(!audio.src || audio.src === window.location.href){
+      loadSong(cur, true);
+    } else {
+      audio.play().catch(function(){ setPlayUI(false); });
+      setPlayUI(true);
+    }
+  } else {
+    audio.pause();
+    setPlayUI(false);
+  }
+}
+
+function prev(){ loadSong((cur - 1 + songs.length) % songs.length, playing); }
+function next(){ loadSong((cur + 1) % songs.length,                playing); }
+
+audio.addEventListener('ended', function(){ next(); });
+
+function prev(){
+  var idx = shuffleOn ? randIdx() : (cur - 1 + songs.length) % songs.length;
+  loadSong(idx, playing);
+}
+function next(){
+  if(loopMode === 2){ loadSong(cur, true); return; }
+  var idx = shuffleOn ? randIdx() : (cur + 1) % songs.length;
+  loadSong(idx, playing || loopMode === 1);
+}
+function randIdx(){
+  var i; do { i = Math.floor(Math.random() * songs.length); } while(i === cur && songs.length > 1); return i;
+}
+
+audio.addEventListener('ended', function(){ next(); });
+
+/* ── SHUFFLE ── */
+function toggleShuffle(){
+  shuffleOn = !shuffleOn;
+  document.getElementById('btn-shuffle').classList.toggle('on', shuffleOn);
+  showToast(shuffleOn ? 'SHUFFLE ON' : 'SHUFFLE OFF');
+}
+
+/* ── LOOP ── */
+var loopLabels = ['LOOP OFF','LOOP ALL','LOOP ONE'];
+function toggleLoop(){
+  loopMode = (loopMode + 1) % 3;
+  audio.loop = loopMode === 2;
+  document.getElementById('btn-loop').classList.toggle('on', loopMode > 0);
+  showToast(loopLabels[loopMode]);
+}
+
+/* ── VOLUME SCROLL ── */
+var volTimer;
+audio.volume = 0.8;
+function showVol(){
+  var el = document.getElementById('vol-indicator');
+  document.getElementById('vol-num').textContent = Math.round(audio.volume * 100);
+  el.classList.add('show');
+  clearTimeout(volTimer);
+  volTimer = setTimeout(function(){ el.classList.remove('show'); }, 1400);
+}
+window.addEventListener('wheel', function(e){
+  e.preventDefault();
+  audio.volume = Math.min(1, Math.max(0, audio.volume - e.deltaY * 0.001));
+  showVol();
+}, {passive:false});
+// touch swipe vertical for volume on mobile
+var touchStartY = 0;
+window.addEventListener('touchstart', function(e){ touchStartY = e.touches[0].clientY; }, {passive:true});
+window.addEventListener('touchmove', function(e){
+  if(document.getElementById('idle-overlay').classList.contains('active')) return;
+  var dy = touchStartY - e.touches[0].clientY;
+  if(Math.abs(dy) > 3){
+    audio.volume = Math.min(1, Math.max(0, audio.volume + dy * 0.002));
+    touchStartY = e.touches[0].clientY;
+    showVol();
+  }
+}, {passive:true});
+
+/* ── TOAST ── */
+var toastTimer;
+function showToast(m){
+  var el = document.getElementById('toast');
+  el.textContent = m; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 1800);
+}
+
+updateUI();
+audio.src = songs[0].src;
+</script>
+</body>
+</html>
