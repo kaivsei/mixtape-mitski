@@ -218,17 +218,6 @@ main{
 }
 #vol-indicator.show{opacity:1;}
 
-/* track counter — text only */
-#track-counter{
-  display:flex;
-  align-items:center;
-  gap:0.4rem;
-  font-family:'Press Start 2P',monospace;
-  font-size:0.45rem;
-  color:var(--mist2);
-  letter-spacing:0.1em;
-}
-
 /* hidden audio element — browser default controls hidden, we drive it via JS */
 #player{display:none;}
 
@@ -453,16 +442,9 @@ main{
     </button>
   </div>
 
-  <!-- track label only, no bar -->
-  <div id="track-counter">
-    <span id="cnt-cur">01</span>
-    <span style="opacity:0.3">—</span>
-    <span id="cnt-total">05</span>
-  </div>
-
-  <!-- circle (shuffle) + X (loop) -->
+  <!-- circle (loop) + X (shuffle) -->
   <div id="extras">
-    <button class="px-btn-sm" id="btn-shuffle" onclick="toggleShuffle()" title="shuffle" aria-label="shuffle">
+    <button class="px-btn-sm" id="btn-loop" onclick="toggleLoop()" title="loop" aria-label="loop">
       <!-- pixel circle outline -->
       <svg width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
         <rect x="4" y="1" width="8" height="2"/>
@@ -473,7 +455,7 @@ main{
         <rect x="4" y="13" width="8" height="2"/>
       </svg>
     </button>
-    <button class="px-btn-sm" id="btn-loop" onclick="toggleLoop()" title="loop" aria-label="loop">
+    <button class="px-btn-sm" id="btn-shuffle" onclick="toggleShuffle()" title="shuffle" aria-label="shuffle">
       <!-- pixel X / cross -->
       <svg width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges" fill="currentColor">
         <rect x="2" y="2" width="2" height="2"/>
